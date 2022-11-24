@@ -6,19 +6,31 @@
 #include <fstream>
 #include <cwchar>
 #include <windows.h>
+#include <vector>
+#include "Linked.h" //doubly linked list bag
 using namespace std;
+
+
+void displayBag(const DoublyLinkedBag<string>& bag)
+    {
+        cout << "The bag contains " << bag.getCurrentSize()
+        << " items:" << endl;
+        
+    vector<string> bagItems = bag.toVector();
+    int numberOfEntries = (int) bagItems.size();
+    for (int i = 0; i < numberOfEntries; i++)
+        {
+            cout << bagItems[i] << " ";
+        } // end for
+        
+        cout << endl << endl;
+    }   // end displayBag
+
 
 int main() {
 
-    CONSOLE_FONT_INFOEX cfi;
-    cfi.cbSize = sizeof(cfi);
-    cfi.nFont = 0;
-    cfi.dwFontSize.X = 0;                   // Width of each character in the font
-    cfi.dwFontSize.Y = 30;                  // Height
-    cfi.FontFamily = FF_DONTCARE;
-    cfi.FontWeight = FW_NORMAL;
-    std::wcscpy(cfi.FaceName, L"Consolas"); // Choose your font
-    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
+    DoublyLinkedBag<string> lib;
+    
 
     int n = 1;
     string input, in;
@@ -26,12 +38,13 @@ int main() {
     srand(time(NULL));//  without this rand() function might continuously give the same value
     
     string filename = "data.txt";
+    string filename2 = "library.txt";
     ifstream dataFile;
     dataFile.open(filename, ios::in);
 
     if (dataFile.fail())
     {
-      cout << filename << "file canne intot be opened!" << endl;
+      cout << filename << "file cannot be opened!" << endl;
       cout << endl;
       return 0;
     }
@@ -40,44 +53,63 @@ int main() {
     dataFile >> hw;
     int num = stoi(hw);
     score = num;
-      
-
     dataFile.close();
 
 
+    dataFile.open(filename2, ios::in);
 
+    if (dataFile.fail())
+    {
+      cout << filename << "file cannot be opened!" << endl;
+      cout << endl;
+      return 0;
+    }
+
+
+    if(dataFile.is_open());
+    {
+        string words;
+        while(dataFile >> words)
+        {
+            lib.add(words);
+        }
+   
+    }
+
+        dataFile.close();
 label4:
+
+
+
     cout << "current score: " << score << endl;
-    cout << "type start to play and exit to exit back to home, type save to save" << endl;
+    cout << "1: start" << endl;
+    cout << "2: save" << endl;
+    cout << "3: exit" << endl;
     cout << "->";
     cin >> in; 
 
+
+ vector<string> libWord = lib.toVector();
 if (in == "start") 
 {
- 
-    label1:
-    string s=""; // taking null string
 
-    int m = rand() % 10;
+   
+    label1:
     
-    if(m < 4)
-    {
-        goto label1;
-    }
-    for(int i=0; i<m; i++)
-    {
-        s += 'a' + (rand() % 26);
-    }
+
+    int m = rand() % 1000;
+    
+
     
     label3:
-    SetCurrentConsoleFontEx(GetStdHandle(STD_OUTPUT_HANDLE), FALSE, &cfi);
-    cout<<s<<" ";
+
+    cout<<libWord[m]<<" ";
     cout << endl;
     cout << "->";
     cin >> input;
     
     
-    if (input == s)
+    if (input == libWord[m])
     {
         score ++;
         goto label1;
@@ -115,4 +147,3 @@ else if (in == "save")
     
     return 0;
 }
-
